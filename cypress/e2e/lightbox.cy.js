@@ -110,5 +110,20 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     cy.get(toggleCommentsLink).click();
     cy.get('#lightbox .bg-white.flex.flex-col').should('be.visible');
   });
+// 8. Compteurs de commentaires (overlay + lien show/hide dans la lightbox)
+  it('met à jour les compteurs de commentaires overlay et lightbox', () => {
+    cy.get(`${overlaySelector} img`).click({ force: true });
+
+    cy.get(commentInput).type('Un');
+    cy.get(publishBtn).click();
+    cy.get(commentInput).type('Deux');
+    cy.get(publishBtn).click();
+
+    cy.get(lightboxBackdrop).click(5, 5);
+    cy.get(overlaySelector).trigger('mouseover');
+    cy.get(overlayComments).should('have.text', '2');
+
+    cy.get(toggleCommentsLink).should('contain.text', '2');
+  });
 
 });
