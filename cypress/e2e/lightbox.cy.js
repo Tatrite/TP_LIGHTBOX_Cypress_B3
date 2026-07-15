@@ -47,6 +47,21 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     cy.get(overlaySelector).trigger('mouseover');
     cy.get(overlayLikes).should('have.text', '1');
   });
+// 4. Suppression du like et mise à jour des compteurs
+  it('retire un like et remet les compteurs à zéro', () => {
+    cy.get(`${overlaySelector} img`).click({ force: true });
+    cy.get(likeBtn).click();
+    cy.get(lightboxLikes).should('have.text', '1');
 
+    cy.get(dislikeBtn).click();
+
+    cy.get(lightboxLikes).should('have.text', '0');
+    cy.get(likeBtn).should('be.visible');
+    cy.get(dislikeBtn).should('not.be.visible');
+
+    cy.get(lightboxBackdrop).click(5, 5);
+    cy.get(overlaySelector).trigger('mouseover');
+    cy.get(overlayLikes).should('have.text', '0');
+  });
 
 });
