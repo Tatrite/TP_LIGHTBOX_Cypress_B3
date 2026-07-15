@@ -7,8 +7,13 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     cy.visit('../../lightbox.html');
   });
 
-  const overlaySelector = '.relative.w-64';
-  const lightboxBackdrop = '.fixed.top-0.left-0.flex.flex-col';
+    const overlaySelector = '.relative.w-64';
+    const overlayLikes = `${overlaySelector} [x-text="likesCount"]`;
+
+    const lightboxBackdrop = '.fixed.top-0.left-0.flex.flex-col';
+    const lightboxLikes = '#lightbox [x-text="likesCount"]';
+    const likeBtn = 'svg[title="Like"]';
+    const dislikeBtn = 'svg[title="Dislike"]';
 
   // 1. Ouverture de la lightbox au clic sur l'image
   it('ouvre la lightbox au clic sur l\'image', () => {
@@ -27,6 +32,21 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     cy.get(lightboxBackdrop).should('not.be.visible');
   });
 
+  // 3. Ajout du like et mise à jour des compteurs (overlay + lightbox)
+  it('ajoute un like et met à jour les compteurs overlay et lightbox', () => {
+    cy.get(`${overlaySelector} img`).click({ force: true });
+
+    cy.get(likeBtn).click();
+
+    cy.get(lightboxLikes).should('have.text', '1');
+    cy.get(dislikeBtn).should('be.visible');
+    cy.get(likeBtn).should('not.be.visible');
+
+    // Vérification du compteur affiché dans l'overlay (survol pour l'afficher)
+    cy.get(lightboxBackdrop).click(5, 5);
+    cy.get(overlaySelector).trigger('mouseover');
+    cy.get(overlayLikes).should('have.text', '1');
+  });
 
 
 });
