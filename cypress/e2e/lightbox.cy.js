@@ -19,6 +19,7 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     const publishBtn = '#lightbox button[type="submit"]';
     const commentRows = '#lightbox .flex.items-center.justify-between.py-2.px-4';
     const toggleCommentsLink = '#lightbox [x-text="displayCommentText()"]';
+    const deleteIcon = 'svg[title="Supprimer le commentaire"]';
 
   // 1. Ouverture de la lightbox au clic sur l'image
   it('ouvre la lightbox au clic sur l\'image', () => {
@@ -125,7 +126,7 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
 
     cy.get(toggleCommentsLink).should('contain.text', '2');
   });
-  
+
 // 9. Singulier / pluriel selon le nombre de commentaires
   it('affiche le singulier ou le pluriel selon le nombre de commentaires', () => {
     cy.get(`${overlaySelector} img`).click({ force: true });
@@ -138,6 +139,23 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     cy.get(publishBtn).click();
     cy.get(toggleCommentsLink).should('have.text', 'Hide 2 comments');
   });
+// 10. Suppression du bon commentaire parmi trois
+  it('supprime le second commentaire parmi trois au clic sur sa croix', () => {
+    cy.get(`${overlaySelector} img`).click({ force: true });
 
+    ['Commentaire 1', 'Commentaire 2', 'Commentaire 3'].forEach((texte) => {
+      cy.get(commentInput).type(texte);
+      cy.get(publishBtn).click();
+    });
+
+    cy.get(commentRows).should('have.length', 3);
+
+    // Suppression du second commentaire (index 1)
+    cy.get(commentRows).eq(1).find(deleteIcon).click();
+
+    cy.get(commentRows).should('have.length', 2);
+    cy.get(commentRows).eq(0).find('.text-black.text-xs').should('have.text', 'Commentaire 1');
+    cy.get(commentRows).eq(1).find('.text-black.text-xs').should('have.text', 'Commentaire 3');
+  });
 
 });
