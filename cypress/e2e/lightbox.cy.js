@@ -125,5 +125,19 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
 
     cy.get(toggleCommentsLink).should('contain.text', '2');
   });
+  
+// 9. Singulier / pluriel selon le nombre de commentaires
+  it('affiche le singulier ou le pluriel selon le nombre de commentaires', () => {
+    cy.get(`${overlaySelector} img`).click({ force: true });
+
+    cy.get(commentInput).type('Un seul commentaire');
+    cy.get(publishBtn).click();
+    cy.get(toggleCommentsLink).should('have.text', 'Hide 1 comment');
+
+    cy.get(commentInput).type('Un deuxième commentaire');
+    cy.get(publishBtn).click();
+    cy.get(toggleCommentsLink).should('have.text', 'Hide 2 comments');
+  });
+
 
 });
