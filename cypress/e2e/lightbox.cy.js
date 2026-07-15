@@ -81,6 +81,18 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     // Le champ est réinitialisé après publication
     cy.get(commentInput).should('have.value', '');
   });
+// 6. Impossibilité de publier un commentaire vide (bouton désactivé)
+  it('garde le bouton Publish désactivé tant que le champ est vide', () => {
+    cy.get(`${overlaySelector} img`).click({ force: true });
 
+    cy.get(publishBtn).should('be.disabled');
+
+    // Saisie puis effacement : le bouton doit redevenir désactivé
+    cy.get(commentInput).type('test');
+    cy.get(publishBtn).should('not.be.disabled');
+
+    cy.get(commentInput).clear();
+    cy.get(publishBtn).should('be.disabled');
+  });
 
 });
