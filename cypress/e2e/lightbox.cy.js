@@ -9,11 +9,15 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
 
     const overlaySelector = '.relative.w-64';
     const overlayLikes = `${overlaySelector} [x-text="likesCount"]`;
+    const overlayComments = `${overlaySelector} [x-text="commentsCount()"]`;
 
     const lightboxBackdrop = '.fixed.top-0.left-0.flex.flex-col';
     const lightboxLikes = '#lightbox [x-text="likesCount"]';
     const likeBtn = 'svg[title="Like"]';
     const dislikeBtn = 'svg[title="Dislike"]';
+    const commentInput = '#lightbox input[name="comment"]';
+    const publishBtn = '#lightbox button[type="submit"]';
+    const commentRows = '#lightbox .flex.items-center.justify-between.py-2.px-4';
 
   // 1. Ouverture de la lightbox au clic sur l'image
   it('ouvre la lightbox au clic sur l\'image', () => {
@@ -63,5 +67,20 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     cy.get(overlaySelector).trigger('mouseover');
     cy.get(overlayLikes).should('have.text', '0');
   });
+ // 5. Ajout d'un commentaire
+  it('ajoute un commentaire "Cypress is awesome!"', () => {
+    cy.get(`${overlaySelector} img`).click({ force: true });
+
+    cy.get(commentInput).type('Cypress is awesome!');
+    cy.get(publishBtn).should('not.be.disabled').click();
+
+    cy.get(commentRows).should('have.length', 1);
+    cy.get(commentRows).first().find('.text-black.text-xs').should('have.text', 'Cypress is awesome!');
+    cy.get(commentRows).first().find('.text-gray-500').should('have.text', 'johndoe');
+
+    // Le champ est réinitialisé après publication
+    cy.get(commentInput).should('have.value', '');
+  });
+
 
 });
