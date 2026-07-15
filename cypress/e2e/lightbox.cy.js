@@ -17,6 +17,16 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     cy.get(lightboxBackdrop).should('be.visible');
     cy.get('#lightbox').should('be.visible');
   });
+    // 2. Fermeture de la lightbox au clic en dehors
+  it('ferme la lightbox au clic en dehors du bloc #lightbox', () => {
+    cy.get(`${overlaySelector} img`).click({ force: true });
+    cy.get(lightboxBackdrop).should('be.visible');
+
+    // Clic sur le fond, en dehors de #lightbox (coin haut-gauche du backdrop)
+    cy.get(lightboxBackdrop).click(5, 5);
+    cy.get(lightboxBackdrop).should('not.be.visible');
+  });
+
 
 
 });
