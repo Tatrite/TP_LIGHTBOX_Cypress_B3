@@ -18,6 +18,7 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
     const commentInput = '#lightbox input[name="comment"]';
     const publishBtn = '#lightbox button[type="submit"]';
     const commentRows = '#lightbox .flex.items-center.justify-between.py-2.px-4';
+    const toggleCommentsLink = '#lightbox [x-text="displayCommentText()"]';
 
   // 1. Ouverture de la lightbox au clic sur l'image
   it('ouvre la lightbox au clic sur l\'image', () => {
@@ -93,6 +94,21 @@ describe('Lightbox - Alpine JS / Tailwind', () => {
 
     cy.get(commentInput).clear();
     cy.get(publishBtn).should('be.disabled');
+  });
+// 7. Masquage des commentaires
+  it('permet de masquer/afficher la liste des commentaires', () => {
+    cy.get(`${overlaySelector} img`).click({ force: true });
+    cy.get(commentInput).type('Premier commentaire');
+    cy.get(publishBtn).click();
+
+    // Visible automatiquement après publication
+    cy.get('#lightbox .bg-white.flex.flex-col').should('be.visible');
+
+    cy.get(toggleCommentsLink).click();
+    cy.get('#lightbox .bg-white.flex.flex-col').should('not.be.visible');
+
+    cy.get(toggleCommentsLink).click();
+    cy.get('#lightbox .bg-white.flex.flex-col').should('be.visible');
   });
 
 });
